@@ -1,6 +1,6 @@
 {
-    "name": "zip-stream",
-    "version": "0.0.0",
+    "name": "node-zip-streamer",
+    "version": "1.0.0",
     "description": "Add ReadStream support for .zip-files (uncompressed or deflate) to node",
     "main": "index.js",
     "scripts": {
