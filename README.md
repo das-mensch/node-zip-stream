@@ -1,15 +1,15 @@
-# node-zip-stream
+# node-zip-streamer
 Add zip-file streaming possibility
 
 This is the implementation of a very simple ZipStreamReader. Whenever you are facing the situation to read multiple files from a given zip file this simple stream will help you.
 
 ## Installation
-```npm i --save node-zip-stream```
+```npm i --save node-zip-streamer```
 
 ## Usage
 A simple example might be:
 ```
-const ZipFileReadStream = require('node-zip-stream');
+const ZipFileReadStream = require('node-zip-streamer');
 ...
 try {
     const zipStream = new ZipFileReadStream('some-file.zip');
