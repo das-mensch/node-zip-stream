@@ -4,7 +4,7 @@
     "description": "Add ReadStream support for .zip-files (uncompressed or deflate) to node",
     "main": "index.js",
     "scripts": {
-        "test": "npm run test"
+        "test": "nyc --reporter=text --reporter=html mocha --recursive"
     },
     "repository": {
         "type": "git",
