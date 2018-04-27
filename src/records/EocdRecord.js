@@ -34,6 +34,10 @@ module.exports = class EocdRecord {
 
     }
 
+    get magicNumber() {
+        return this._magicNumber;
+    }
+
     get cdSize() {
         return this._cdSize;
     }

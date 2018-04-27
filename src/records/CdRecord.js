@@ -92,6 +92,10 @@ module.exports = class CdRecord {
         );
     }
 
+    get magicNumber() {
+        return this._magicNumber;
+    }
+
     get offset() {
         return this._offset;
     }
