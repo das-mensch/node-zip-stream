@@ -49,21 +49,21 @@ module.exports = class ZipFileReadStream extends Readable {
         let fileResource = fs.openSync(this._filePath, 'r');
         let eocdMagicNumberBuffer = Buffer.alloc(4, 0);
         let startPosition = this._fileSize - 20;
-        while (startPosition > 0 && eocdMagicNumberBuffer.readUInt32LE(0) !== EocdRecord.MAGIC_NUMBER) {
-            fs.readSync(fileResource, eocdMagicNumberBuffer, 0, 4, startPosition--);
+        while (startPosition > 0 && eocdMagicNumberBuffer.readUInt32LE(0) !== EocdRecord.MAGIC_NUMBER()) {
+            fs.readSync(this._fd, eocdMagicNumberBuffer, 0, 4, startPosition--);
         }
         startPosition++;
-        if (eocdMagicNumberBuffer.readUInt32LE(0) !== EocdRecord.MAGIC_NUMBER) {
+        if (eocdMagicNumberBuffer.readUInt32LE(0) !== EocdRecord.MAGIC_NUMBER()) {
             throw new Error(`Could not find EOCD record.`);
         }
         let zip64LocatorBuffer = Buffer.alloc(20);
         fs.readSync(fileResource, zip64LocatorBuffer, 0, zip64LocatorBuffer.length, startPosition - 20);
         let zip64LocatorRecord = Zip64CdLocatorRecord.fromBuffer(zip64LocatorBuffer);
-        if (zip64LocatorRecord.magicNumber === 0x07064b50) {
+        if (zip64LocatorRecord.magicNumber === Zip64CdLocatorRecord.MAGIC_NUMBER()) {
             let zip64EocdBuffer = Buffer.alloc(56);
             fs.readSync(fileResource, zip64EocdBuffer, 0, zip64EocdBuffer.length, zip64LocatorRecord.cdOffset);
             const zip64EoCdRecord = Zip64EocdRecord.fromBuffer(zip64EocdBuffer);
-            if (zip64EoCdRecord.magicNumber !== 0x06064b50) {
+            if (zip64EoCdRecord.magicNumber !== Zip64EocdRecord.MAGIC_NUMBER()) {
                 throw new Error('Could not find ZIP64 EOCD record');
             }
             this._eocdRecord = zip64EoCdRecord;

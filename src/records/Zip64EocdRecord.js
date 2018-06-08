@@ -12,6 +12,10 @@ module.exports = class Zip64EocdRecord {
         this._cdOffset = cdOffset;
     }
 
+    static MAGIC_NUMBER() {
+        return 0x06064b50;
+    }
+
     static fromBuffer(buffer) {
         if (!(buffer instanceof Buffer)) {
             throw new Error('Could not read ZIP64EOCD record.');
