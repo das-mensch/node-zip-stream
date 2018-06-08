@@ -16,6 +16,6 @@ module.exports = async (fileName) => {
         });
         zipStream.on('error', error => {
             rej(error);
-        })
+        });
     })
 };

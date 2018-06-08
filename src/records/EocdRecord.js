@@ -11,6 +11,10 @@ module.exports = class EocdRecord {
         this._comment = comment;
     }
 
+    static MAGIC_NUMBER() {
+        return 0x06054b50;
+    }
+
     static fromBuffer(buffer) {
         if (!(buffer instanceof Buffer)) {
             throw new Error('Could not read EOCD record.');
@@ -32,6 +36,10 @@ module.exports = class EocdRecord {
         }
         return new EocdRecord(magicNumber, diskNo, cdStartDisk, cdNoOnDisk, cdCount, cdSize, cdOffset, commentLength, comment);
 
+    }
+
+    get magicNumber() {
+        return this._magicNumber;
     }
 
     get cdSize() {

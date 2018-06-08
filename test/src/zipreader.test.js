@@ -1,5 +1,6 @@
 const assert = require('assert');
 const { describe, it } = require("mocha");
+const ZipFileReadStream = require('../../index');
 
 const zipReader = require('./helper');
 
@@ -25,6 +26,42 @@ describe('ZipReadStream', () => {
             assert.equal(files[2].name, 'lorem_3.txt');
             assert.equal(files[2].method, 'DEFLATE');
             assert.equal(files[2].content.startsWith('Lorem ipsum'), true);
+        });
+
+        it('#zip64 support', done => {
+            const zipStream = new ZipFileReadStream('./test/resources/zip64_stored.zip');
+            assert.equal(zipStream.fileCount, 65537);
+            let file = null;
+            zipStream.on('data', file => {
+                file = {
+                    name: file.metaInfo.fileName,
+                    method: file.metaInfo.cMethodName,
+                    content: file.content.toString()
+                };
+                zipStream.pause();
+                assert.equal(file.name, '0.txt');
+                assert.equal(file.method, 'STORE');
+                assert.equal(file.content, 'Lorem Ipsum');
+                done();
+            });
+        });
+
+        it('#zip64 deflate support', done => {
+            const zipStream = new ZipFileReadStream('./test/resources/zip64_deflate.zip');
+            assert.equal(zipStream.fileCount, 65537);
+            let file = null;
+            zipStream.on('data', file => {
+                file = {
+                    name: file.metaInfo.fileName,
+                    method: file.metaInfo.cMethodName,
+                    content: file.content.toString()
+                };
+                zipStream.pause();
+                assert.equal(file.name, '0.txt');
+                assert.equal(file.method, 'DEFLATE');
+                assert.equal(file.content.startsWith('Lorem ipsum'), true);
+                done();
+            });
         });
     });
 
