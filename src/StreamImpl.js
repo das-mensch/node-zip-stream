@@ -3,6 +3,7 @@ const zlib = require('zlib');
 const { Readable } = require('stream');
 
 const { CdRecord, EocdRecord, Zip64CdLocatorRecord, Zip64EocdRecord } = require('./records');
+const ZIP_MAGIC_NUMBER = 0x04034b50;
 
 module.exports = class ZipFileReadStream extends Readable {
     constructor(filePath, options) {
@@ -39,7 +40,7 @@ module.exports = class ZipFileReadStream extends Readable {
         let magicNumberBuffer = Buffer.alloc(4);
         fs.readSync(fileResource, magicNumberBuffer, 0, 4, 0);
         fs.closeSync(fileResource);
-        if (magicNumberBuffer.readUInt32LE(0) !== 0x04034b50) {
+        if (magicNumberBuffer.readUInt32LE(0) !== ZIP_MAGIC_NUMBER) {
             throw new Error(`${this._filePath} is not a valid zip file or empty.`);
         }
     }
@@ -48,11 +49,11 @@ module.exports = class ZipFileReadStream extends Readable {
         let fileResource = fs.openSync(this._filePath, 'r');
         let eocdMagicNumberBuffer = Buffer.alloc(4, 0);
         let startPosition = this._fileSize - 20;
-        while (startPosition > 0 && eocdMagicNumberBuffer.readUInt32LE(0) !== 0x06054b50) {
+        while (startPosition > 0 && eocdMagicNumberBuffer.readUInt32LE(0) !== EocdRecord.MAGIC_NUMBER) {
             fs.readSync(fileResource, eocdMagicNumberBuffer, 0, 4, startPosition--);
         }
         startPosition++;
-        if (eocdMagicNumberBuffer.readUInt32LE(0) !== 0x06054b50) {
+        if (eocdMagicNumberBuffer.readUInt32LE(0) !== EocdRecord.MAGIC_NUMBER) {
             throw new Error(`Could not find EOCD record.`);
         }
         let zip64LocatorBuffer = Buffer.alloc(20);

@@ -11,6 +11,10 @@ module.exports = class EocdRecord {
         this._comment = comment;
     }
 
+    static MAGIC_NUMBER() {
+        return 0x06054b50;
+    }
+
     static fromBuffer(buffer) {
         if (!(buffer instanceof Buffer)) {
             throw new Error('Could not read EOCD record.');
