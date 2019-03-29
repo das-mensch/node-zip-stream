@@ -6,7 +6,7 @@ This is the implementation of a very simple ZipStreamReader. Whenever you are fa
 Now with ZIP64 support.
 
 ## Installation
-```npm i --save node-zip-streamer```
+```npm i node-zip-streamer```
 
 ## Usage
 A simple example might be:
@@ -33,6 +33,9 @@ try {
 - Multipart zip archives are not supported
 
 ## Changes
+### 1.0.3
+- Fixed error while reading Zip64-Records due to wrong usage of readUint
+
 ### 1.0.2
 - Fixed error due to checking on the wrong extraField length attribute. (offset was wrong when cdRecord extrafield-length had a different value than in the localfile-header)
 - Added ZIP64 support. Archives with file count > 65535 are now possible to be extracted.

@@ -21,15 +21,15 @@ module.exports = class Zip64EocdRecord {
             throw new Error('Could not read ZIP64EOCD record.');
         }
         const magicNumber = buffer.readUInt32LE(0);
-        const eocdSize = buffer.readUIntLE(4, 8, false);
+        const eocdSize = buffer.readUIntLE(4, 4);
         const versionMadeBy = buffer.readUInt16LE(12);
         const versionNeeded = buffer.readUInt16LE(14);
         const noOfDisk = buffer.readUInt32LE(16);
         const noOfDiskStart = buffer.readUInt32LE(20);
-        const cdTotalNoOnDisk = buffer.readUIntLE(24, 8, false);
-        const cdTotalNo = buffer.readUIntLE(32, 8, false);
-        const cdSize = buffer.readUIntLE(40, 8, false);
-        const cdOffset = buffer.readUIntLE(48, 8, false);
+        const cdTotalNoOnDisk = buffer.readUIntLE(24, 4);
+        const cdTotalNo = buffer.readUIntLE(32, 4);
+        const cdSize = buffer.readUIntLE(40, 4);
+        const cdOffset = buffer.readUIntLE(48, 4);
 
         return new Zip64EocdRecord(magicNumber, eocdSize, versionMadeBy, versionNeeded, noOfDisk, noOfDiskStart, cdTotalNoOnDisk, cdTotalNo, cdSize, cdOffset);
 
