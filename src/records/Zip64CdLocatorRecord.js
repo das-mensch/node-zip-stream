@@ -16,7 +16,7 @@ module.exports = class Zip64CdLocatorRecord {
         }
         const magicNumber = buffer.readUInt32LE(0);
         const cdStartDisk = buffer.readUInt32LE(4);
-        const cdOffset = buffer.readUIntLE(8, 8, false);
+        const cdOffset = buffer.readUIntLE(8, 4);
         const noDisks = buffer.readUInt32LE(16);
         return new Zip64CdLocatorRecord(magicNumber, cdStartDisk, cdOffset, noDisks);
     }
