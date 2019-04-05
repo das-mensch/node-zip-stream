@@ -7,25 +7,25 @@ const ZIP_MAGIC_NUMBER = 0x04034b50;
 
 module.exports = class ZipFileReadStream extends Readable {
   constructor(filePath, options) {
-    if (!options) {
-      options = {objectMode: true};
-    } else {
-      options.objectMode = true;
-    }
-    super(options);
+    const givenOptions = options || { objectMode: true, filter: null };
+    // always run in object mode
+    givenOptions.objectMode = true;
+    super(givenOptions);
+    this._filter = givenOptions.filter || null;
     this._eocdRecord = null;
     this._filePath = filePath;
-    this._filesSend = 0;
     this._filesPushed = 0;
     this._cdBuffer = null;
-    this._currentOffset = 0;
     this._fd = null;
+    this._cdRecords = [];
     this.checkPreConditions();
     this.readMetaInformation();
+    this.preFilterFiles();
+    this._filesToSend = this._cdRecords.length;
   }
 
   get fileCount() {
-    return this._eocdRecord.cdCount;
+    return this._cdRecords.length;
   }
 
   checkPreConditions() {
@@ -71,6 +71,7 @@ module.exports = class ZipFileReadStream extends Readable {
       this._eocdRecord = zip64EoCdRecord;
       this._cdBuffer = Buffer.alloc(zip64EoCdRecord.cdSize);
       fs.readSync(this._fd, this._cdBuffer, 0, this._cdBuffer.length, zip64EoCdRecord.cdOffset);
+      this.splitCdBuffer();
       return;
     }
     let eocdBuffer = Buffer.alloc(this._fileSize - startPosition);
@@ -78,30 +79,57 @@ module.exports = class ZipFileReadStream extends Readable {
     this._eocdRecord = EocdRecord.fromBuffer(eocdBuffer);
     this._cdBuffer = Buffer.alloc(this._eocdRecord.cdSize);
     fs.readSync(this._fd, this._cdBuffer, 0, this._cdBuffer.length, this._eocdRecord.cdOffset);
+    this.splitCdBuffer();
+  }
+
+  splitCdBuffer() {
+    let offset = 0;
+    let currentCdRecord;
+    for (let i = 0; i < this._eocdRecord.cdCount; i++) {
+      currentCdRecord = CdRecord.fromBuffer(this._cdBuffer.slice(offset));
+      offset += currentCdRecord.recordSize;
+      this._cdRecords.push(currentCdRecord);
+    }
+  }
+
+  preFilterFiles() {
+    if (!this._filter) {
+      return;
+    }
+    this._cdRecords = this._cdRecords.filter(record => {
+      if (this._filter instanceof RegExp) {
+        return this._filter.test(record.fileName);
+      }
+      if (typeof this._filter === 'string') {
+        return record.fileName === this._filter;
+      }
+      if (this._filter instanceof Function) {
+        return this._filter(record.fileName);
+      }
+      return false;
+    });
   }
 
   handlePostPush() {
     this._filesPushed++;
-    if (this._filesPushed === this._eocdRecord.cdCount) {
+    if (this._filesToSend === this._filesPushed) {
       fs.closeSync(this._fd);
       this.push(null);
     }
   }
 
-  _read() {
-    if (this._filesPushed === this._eocdRecord.cdCount) {
+  _read(_) {
+    if (this._filesToSend === this._filesPushed) {
       fs.closeSync(this._fd);
       this.push(null);
       return;
     }
 
-    if (this._filesSend === this._eocdRecord.cdCount) {
+    if (this._cdRecords.length === 0) {
       return;
     }
-
-    let cdRecord = CdRecord.fromBuffer(this._cdBuffer.slice(this._currentOffset));
-    let metaInfo = {fileName: cdRecord.fileName, cMethodName: cdRecord.cMethodName};
-    this._currentOffset += cdRecord.recordSize;
+    const cdRecord = this._cdRecords.shift();
+    const metaInfo = {fileName: cdRecord.fileName, cMethodName: cdRecord.cMethodName};
     const localFileHeaderBuffer = Buffer.alloc(30);
     fs.readSync(this._fd, localFileHeaderBuffer, 0, 30, cdRecord.offset);
     const localFileHeader = LocalFileHeader.fromBuffer(localFileHeaderBuffer);
@@ -135,6 +163,5 @@ module.exports = class ZipFileReadStream extends Readable {
         this.handlePostPush();
       });
     });
-    this._filesSend++;
   }
 };
