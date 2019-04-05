@@ -1,43 +1,43 @@
 {
-    "name": "node-zip-streamer",
-    "version": "1.0.3",
-    "description": "Add ReadStream support for .zip-files (uncompressed or deflate) to node",
-    "main": "index.js",
-    "scripts": {
-        "test": "nyc --reporter=text --reporter=html mocha --recursive"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/das-mensch/node-zip-stream.git"
-    },
-    "keywords": [
-        "zip",
-        "deflate",
-        "readable",
-        "stream",
-        "inflate"
+  "name": "node-zip-streamer",
+  "version": "1.0.3",
+  "description": "Add ReadStream support for .zip-files (uncompressed or deflate) to node",
+  "main": "index.js",
+  "scripts": {
+    "test": "nyc --reporter=text --reporter=html mocha --recursive"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/das-mensch/node-zip-stream.git"
+  },
+  "keywords": [
+    "zip",
+    "deflate",
+    "readable",
+    "stream",
+    "inflate"
+  ],
+  "author": "Jan Hoffmann",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/das-mensch/node-zip-stream/issues"
+  },
+  "homepage": "https://github.com/das-mensch/node-zip-stream#readme",
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^5.0.0",
+    "nyc": "^13.3.0"
+  },
+  "nyc": {
+    "include": [
+      "src/**/*.js"
     ],
-    "author": "Jan Hoffmann",
-    "license": "MIT",
-    "bugs": {
-        "url": "https://github.com/das-mensch/node-zip-stream/issues"
-    },
-    "homepage": "https://github.com/das-mensch/node-zip-stream#readme",
-    "devDependencies": {
-        "chai": "^4.2.0",
-        "mocha": "^5.0.0",
-        "nyc": "^13.3.0"
-    },
-    "nyc": {
-        "include": [
-            "src/**/*.js"
-        ],
-        "exclude": [
-            "src/**/index.js",
-            "**/node_modules/**",
-            "**/test/**",
-            "**/coverage/**"
-        ],
-        "all": true
-    }
+    "exclude": [
+      "src/**/index.js",
+      "**/node_modules/**",
+      "**/test/**",
+      "**/coverage/**"
+    ],
+    "all": true
+  }
 }
