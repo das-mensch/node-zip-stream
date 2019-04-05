@@ -24,6 +24,7 @@
     },
     "homepage": "https://github.com/das-mensch/node-zip-stream#readme",
     "devDependencies": {
+        "chai": "^4.2.0",
         "mocha": "^5.0.0",
         "nyc": "^13.3.0"
     },
