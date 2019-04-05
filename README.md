@@ -14,25 +14,44 @@ A simple example might be:
 const ZipFileReadStream = require('node-zip-streamer');
 ...
 try {
-    const zipStream = new ZipFileReadStream('some-file.zip');
-    zipStream.on('data', file => {
-        console.log(`File ${file.metaInfo.fileName} has content '${file.content.toString()}'.`);
-    });
-    zipStream.on('end', () => {
-        console.log('Reading finished');
-    });
+  const zipStream = new ZipFileReadStream('some-file.zip');
+  zipStream.on('data', file => {
+    console.log(`File ${file.metaInfo.fileName} has content '${file.content.toString()}'.`);
+  });
+  zipStream.on('end', () => {
+    console.log('Reading finished');
+  });
 } catch (err) {
-    console.error(err);
+  console.error(err);
 }
 
+// You might want to prefilter the files (new in 1.0.4)
+// via RegEx...
+const zipStream = new ZipFileReadStream(
+  'some-file.zip',
+  { filter: /by-regex/ }
+);
+// via exact file name...
+const zipStream = new ZipFileReadStream(
+  'some-file.zip',
+  { filter: 'exact-match.txt' }
+);
+// via your own custom function (should return boolean true to mark a match)...
+const zipStream = new ZipFileReadStream(
+  'some-file.zip',
+  { filter: (fileName) => fileName.startsWith('a') }
+);
 ```
 
 ## Notice
 - Please be aware of that the data event will give you the file contents as a buffer. You might want to use **toString(encoding)** to get the contents.
-- You should not stream big files through this stream as it will get the contents on a per file basis, but multiple little files should work quite okay.
+- You should not stream zip archives containing big files through this stream as it will get the contents on a per file basis, but multiple little files should work quite fine.
 - Multipart zip archives are not supported
 
 ## Changes
+### 1.0.4
+- Added possibility to pre-filter files by function, regex or string
+
 ### 1.0.3
 - Fixed error while reading Zip64-Records due to wrong usage of readUint
 
