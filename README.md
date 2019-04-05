@@ -10,7 +10,7 @@ Now with ZIP64 support.
 
 ## Usage
 A simple example might be:
-```
+```javascript
 const ZipFileReadStream = require('node-zip-streamer');
 ...
 try {
