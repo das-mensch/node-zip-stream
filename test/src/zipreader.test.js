@@ -63,6 +63,42 @@ describe('ZipReadStream', () => {
         done();
       });
     });
+
+    it('#filter regex', async () => {
+      const files = await zipReader('./test/resources/zip64_stored.zip', {
+        filter: /^2(5|6).txt$/
+      });
+      expect(files.length).to.equal(2);
+      expect(files[0].name).to.equal('25.txt');
+      expect(files[0].method).to.equal('STORE');
+      expect(files[0].content).to.equal('Lorem Ipsum');
+      expect(files[1].name).to.equal('26.txt');
+      expect(files[1].method).to.equal('STORE');
+      expect(files[1].content).to.equal('Lorem Ipsum');
+    });
+
+    it('#filter string', async () => {
+      const files = await zipReader('./test/resources/zip64_stored.zip', {
+        filter: '25.txt'
+      });
+      expect(files.length).to.equal(1);
+      expect(files[0].name).to.equal('25.txt');
+      expect(files[0].method).to.equal('STORE');
+      expect(files[0].content).to.equal('Lorem Ipsum');
+    });
+
+    it('#filter function', async () => {
+      const files = await zipReader('./test/resources/zip64_stored.zip', {
+        filter: (name) => ['25.txt', '183.txt'].includes(name)
+      });
+      expect(files.length).to.equal(2);
+      expect(files[0].name).to.equal('183.txt');
+      expect(files[0].method).to.equal('STORE');
+      expect(files[0].content).to.equal('Lorem Ipsum');
+      expect(files[1].name).to.equal('25.txt');
+      expect(files[1].method).to.equal('STORE');
+      expect(files[1].content).to.equal('Lorem Ipsum');
+    });
   });
 
   describe('Errors', () => {
