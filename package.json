@@ -26,7 +26,7 @@
   "devDependencies": {
     "chai": "^4.2.0",
     "mocha": "^5.0.0",
-    "nyc": "^13.3.0"
+    "nyc": "^14.1.1"
   },
   "nyc": {
     "include": [
