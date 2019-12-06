@@ -16,7 +16,7 @@ module.exports = class CdRecord {
     offset,
     fileName,
     extraField,
-    comment
+    comment,
   ) {
     this._magicNumber = magicNumber;
     this._versionCreate = versionCreate;
@@ -35,7 +35,11 @@ module.exports = class CdRecord {
     this._fileName = fileName;
     this._extraField = extraField;
     this._comment = comment;
-    this._recordSize = 46 + this._fileName.length + this._extraField.length + this._comment.length;
+    this._recordSize =
+      46 +
+      this._fileName.length +
+      this._extraField.length +
+      this._comment.length;
   }
 
   static fromBuffer(buffer) {
@@ -59,17 +63,24 @@ module.exports = class CdRecord {
     const internalFileAttr = buffer.readUInt16LE(36);
     const externalFileAttr = buffer.readUInt32LE(38);
     const offset = buffer.readUInt32LE(42);
-    let fileName = "";
+    let fileName = '';
     if (fileNameLength > 0) {
       fileName = buffer.slice(46, 46 + fileNameLength).toString();
     }
-    let extraField = "";
+    let extraField = '';
     if (extraFieldLength > 0) {
-      extraField = buffer.slice(46 + fileNameLength, 46 + fileNameLength + extraFieldLength).toString();
+      extraField = buffer
+        .slice(46 + fileNameLength, 46 + fileNameLength + extraFieldLength)
+        .toString();
     }
-    let comment = "";
+    let comment = '';
     if (commentLength > 0) {
-      comment = buffer.slice(46 + fileNameLength + extraFieldLength, 46 + fileNameLength + extraFieldLength + commentLength).toString();
+      comment = buffer
+        .slice(
+          46 + fileNameLength + extraFieldLength,
+          46 + fileNameLength + extraFieldLength + commentLength,
+        )
+        .toString();
     }
     return new CdRecord(
       magicNumber,
@@ -88,7 +99,7 @@ module.exports = class CdRecord {
       offset,
       fileName,
       extraField,
-      comment
+      comment,
     );
   }
 
@@ -123,7 +134,7 @@ module.exports = class CdRecord {
       case 8:
         return 'DEFLATE';
       default:
-        return 'OTHER'
+        return 'OTHER';
     }
   }
 

@@ -24,9 +24,14 @@
   },
   "homepage": "https://github.com/das-mensch/node-zip-stream#readme",
   "devDependencies": {
+    "@types/node": "^12.12.14",
     "chai": "^4.2.0",
     "mocha": "^5.0.0",
     "nyc": "^14.1.1"
+  },
+  "prettier": {
+    "singleQuote": true,
+    "trailingComma": "all"
   },
   "nyc": {
     "include": [

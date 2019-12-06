@@ -1,5 +1,15 @@
 module.exports = class EocdRecord {
-  constructor(magicNumber, diskNo, cdStartDisk, cdNoOnDisk, cdCount, cdSize, cdOffset, commentLength, comment) {
+  constructor(
+    magicNumber,
+    diskNo,
+    cdStartDisk,
+    cdNoOnDisk,
+    cdCount,
+    cdSize,
+    cdOffset,
+    commentLength,
+    comment,
+  ) {
     this._magicNumber = magicNumber;
     this._diskNo = diskNo;
     this._cdStartDisk = cdStartDisk;
@@ -30,12 +40,21 @@ module.exports = class EocdRecord {
     const cdSize = buffer.readUInt32LE(12);
     const cdOffset = buffer.readUInt32LE(16);
     const commentLength = buffer.readUInt16LE(20);
-    let comment = "";
+    let comment = '';
     if (commentLength > 0) {
       comment = buffer.slice(22).toString();
     }
-    return new EocdRecord(magicNumber, diskNo, cdStartDisk, cdNoOnDisk, cdCount, cdSize, cdOffset, commentLength, comment);
-
+    return new EocdRecord(
+      magicNumber,
+      diskNo,
+      cdStartDisk,
+      cdNoOnDisk,
+      cdCount,
+      cdSize,
+      cdOffset,
+      commentLength,
+      comment,
+    );
   }
 
   get magicNumber() {
