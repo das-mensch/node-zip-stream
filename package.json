@@ -3,6 +3,7 @@
   "version": "1.0.4",
   "description": "Add ReadStream support for .zip-files (uncompressed or deflate) to node",
   "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "scripts": {
     "test": "env TS_NODE_COMPILER_OPTIONS='{\"module\": \"commonjs\" }' mocha -r ts-node/register 'test/**/*.ts'",
     "build": "tsc"

@@ -10,8 +10,8 @@ Now with ZIP64 support.
 
 ## Usage
 A simple example might be:
-```javascript
-const ZipFileReadStream = require('node-zip-streamer');
+```typescript
+import { ZipFileReadStream } from 'node-zip-streamer';
 ...
 try {
   const zipStream = new ZipFileReadStream('some-file.zip');
@@ -49,6 +49,9 @@ const zipStream = new ZipFileReadStream(
 - Multipart zip archives are not supported
 
 ## Changes
+### 2.0.0
+- Added typescript support (finally)
+
 ### 1.0.4
 - Added possibility to pre-filter files by function, regex or string
 
@@ -58,7 +61,3 @@ const zipStream = new ZipFileReadStream(
 ### 1.0.2
 - Fixed error due to checking on the wrong extraField length attribute. (offset was wrong when cdRecord extrafield-length had a different value than in the localfile-header)
 - Added ZIP64 support. Archives with file count > 65535 are now possible to be extracted.
-
-## Roadmap
-### 1.1.0
-- Add the possibility to give back the file contents as streams to process bigger files more easily (configurable, automatic by size limit)?
