@@ -1,38 +1,23 @@
-module.exports = class LocalFileHeader {
+export class LocalFileHeader {
   constructor(
-    magicNumber,
-    versionNeeded,
-    generalPurposeFlags,
-    compressionMethod,
-    lastModTime,
-    lastModDate,
-    crc32,
-    compressedSize,
-    uncompressedSize,
-    fileNameLength,
-    extraFieldLength
-  ) {
-    this._magicNumber = magicNumber;
-    this._versionNeeded = versionNeeded;
-    this._generalPurposeFlags = generalPurposeFlags;
-    this._compressionMethod = compressionMethod;
-    this._lastModTime = lastModTime;
-    this._lastModDate = lastModDate;
-    this._crc32 = crc32;
-    this._compressedSize = compressedSize;
-    this._uncompressedSize = uncompressedSize;
-    this._fileNameLength = fileNameLength;
-    this._extraFieldLength = extraFieldLength;
-  }
+    private _magicNumber: number,
+    private _versionNeeded: number,
+    private _generalPurposeFlags: number,
+    private _compressionMethod: number,
+    private _lastModTime: number,
+    private _lastModDate: number,
+    private _crc32: number,
+    private _compressedSize: number,
+    private _uncompressedSize: number,
+    private _fileNameLength: number,
+    private _extraFieldLength: number
+  ) {}
 
   static MAGIC_NUMBER() {
     return 0x04034b50;
   }
 
-  static fromBuffer(buffer) {
-    if (!(buffer instanceof Buffer)) {
-      throw new Error('Could not read Zip64 central directory record.');
-    }
+  static fromBuffer(buffer: Buffer) {
     const magicNumber = buffer.readUInt32LE(0);
     const versionNeeded = buffer.readUInt16LE(4);
     const generalPurposeFlags = buffer.readUInt16LE(6);
@@ -70,4 +55,4 @@ module.exports = class LocalFileHeader {
   toString() {
     return `Local File Header of size: ${this.recordSize}`;
   }
-};
+}
