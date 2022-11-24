@@ -1,47 +1,29 @@
-module.exports = class CdRecord {
+export class CdRecord {
+  private _recordSize: number;
+
   constructor(
-    magicNumber,
-    versionCreate,
-    minVersion,
-    gpFlag,
-    cMethod,
-    modTime,
-    modDate,
-    crc32,
-    cSize,
-    ucSize,
-    dStart,
-    internalFileAttr,
-    externalFileAttr,
-    offset,
-    fileName,
-    extraField,
-    comment
+    private _magicNumber: number,
+    private _versionCreate: number,
+    private _minVersion: number,
+    private _gpFlag: number,
+    private _cMethod: number,
+    private _modTime: number,
+    private _modDate: number,
+    private _crc32: number,
+    private _cSize: number,
+    private _ucSize: number,
+    private _dStart: number,
+    private _internalFileAttr: number,
+    private _externalFileAttr: number,
+    private _offset: number,
+    private _fileName: string,
+    private _extraField: string,
+    private _comment: string
   ) {
-    this._magicNumber = magicNumber;
-    this._versionCreate = versionCreate;
-    this._minVersion = minVersion;
-    this._gpFlag = gpFlag;
-    this._cMethod = cMethod;
-    this._modTime = modTime;
-    this._modDate = modDate;
-    this._crc32 = crc32;
-    this._cSize = cSize;
-    this._ucSize = ucSize;
-    this._dStart = dStart;
-    this._internalFileAttr = internalFileAttr;
-    this._externalFileAttr = externalFileAttr;
-    this._offset = offset;
-    this._fileName = fileName;
-    this._extraField = extraField;
-    this._comment = comment;
     this._recordSize = 46 + this._fileName.length + this._extraField.length + this._comment.length;
   }
 
-  static fromBuffer(buffer) {
-    if (!(buffer instanceof Buffer)) {
-      throw new Error('Could not read CD record');
-    }
+  static fromBuffer(buffer: Buffer) {
     const magicNumber = buffer.readUInt32LE(0);
     const versionCreate = buffer.readUInt16LE(4);
     const minVersion = buffer.readUInt16LE(6);
@@ -59,17 +41,26 @@ module.exports = class CdRecord {
     const internalFileAttr = buffer.readUInt16LE(36);
     const externalFileAttr = buffer.readUInt32LE(38);
     const offset = buffer.readUInt32LE(42);
-    let fileName = "";
+    let fileName = '';
     if (fileNameLength > 0) {
-      fileName = buffer.slice(46, 46 + fileNameLength).toString();
+      fileName = buffer.subarray(
+        46,
+        46 + fileNameLength
+      ).toString();
     }
-    let extraField = "";
+    let extraField = '';
     if (extraFieldLength > 0) {
-      extraField = buffer.slice(46 + fileNameLength, 46 + fileNameLength + extraFieldLength).toString();
+      extraField = buffer.subarray(
+        46 + fileNameLength,
+        46 + fileNameLength + extraFieldLength
+      ).toString();
     }
-    let comment = "";
+    let comment = '';
     if (commentLength > 0) {
-      comment = buffer.slice(46 + fileNameLength + extraFieldLength, 46 + fileNameLength + extraFieldLength + commentLength).toString();
+      comment = buffer.subarray(
+        46 + fileNameLength + extraFieldLength,
+        46 + fileNameLength + extraFieldLength + commentLength
+      ).toString();
     }
     return new CdRecord(
       magicNumber,
@@ -118,16 +109,20 @@ module.exports = class CdRecord {
 
   get cMethodName() {
     switch (this._cMethod) {
-      case 0:
-        return 'STORE';
-      case 8:
-        return 'DEFLATE';
-      default:
-        return 'OTHER'
+    case 0:
+      return 'STORE';
+    case 8:
+      return 'DEFLATE';
+    default:
+      return 'OTHER';
     }
   }
 
   toString() {
-    return `CD record for file '${this._fileName}':\n\tCompression method: ${this.cMethodName}\n\tCompressed size: ${this._cSize}\n\tUncompressed size: ${this._ucSize}\n`;
+    return `CD record for file '${this._fileName}':
+      Compression method: ${this.cMethodName}
+      Compressed size: ${this._cSize}
+      Uncompressed size: ${this._ucSize}
+    `;
   }
-};
+}

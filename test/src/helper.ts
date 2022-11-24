@@ -1,9 +1,18 @@
-const ZipFileReadStream = require('../../index');
+import { ZipFileReadStream, ZipStreamOptions } from '../../src/StreamImpl';
 
-module.exports = async (fileName, options) => {
+export type ZipFile = {
+  name: string,
+  method: string,
+  content: string
+};
+
+export const zipReader = (
+  fileName: string,
+  options?: ZipStreamOptions
+): Promise<ZipFile[]> => {
   return new Promise((res, rej) => {
     const zipStream = new ZipFileReadStream(fileName, options);
-    let files = [];
+    const files: ZipFile[] = [];
     zipStream.on('data', data => {
       files.push({
         name: data.metaInfo.fileName,
@@ -17,5 +26,5 @@ module.exports = async (fileName, options) => {
     zipStream.on('error', error => {
       rej(error);
     });
-  })
+  });
 };

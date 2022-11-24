@@ -1,24 +1,21 @@
-module.exports = class EocdRecord {
-  constructor(magicNumber, diskNo, cdStartDisk, cdNoOnDisk, cdCount, cdSize, cdOffset, commentLength, comment) {
-    this._magicNumber = magicNumber;
-    this._diskNo = diskNo;
-    this._cdStartDisk = cdStartDisk;
-    this._cdNoOnDisk = cdNoOnDisk;
-    this._cdCount = cdCount;
-    this._cdSize = cdSize;
-    this._cdOffset = cdOffset;
-    this._commentLength = commentLength;
-    this._comment = comment;
-  }
+export class EocdRecord {
+  constructor(
+    private _magicNumber: number,
+    private _diskNo: number,
+    private _cdStartDisk: number,
+    private _cdNoOnDisk: number,
+    private _cdCount: number,
+    private _cdSize: number,
+    private _cdOffset: number,
+    private _commentLength: number,
+    private _comment: string
+  ) {}
 
   static MAGIC_NUMBER() {
     return 0x06054b50;
   }
 
-  static fromBuffer(buffer) {
-    if (!(buffer instanceof Buffer)) {
-      throw new Error('Could not read EOCD record.');
-    }
+  static fromBuffer(buffer: Buffer) {
     const magicNumber = buffer.readUInt32LE(0);
     const diskNo = buffer.readUInt16LE(4);
     const cdStartDisk = buffer.readUInt16LE(6);
@@ -30,12 +27,21 @@ module.exports = class EocdRecord {
     const cdSize = buffer.readUInt32LE(12);
     const cdOffset = buffer.readUInt32LE(16);
     const commentLength = buffer.readUInt16LE(20);
-    let comment = "";
+    let comment = '';
     if (commentLength > 0) {
-      comment = buffer.slice(22).toString();
+      comment = buffer.subarray(22).toString();
     }
-    return new EocdRecord(magicNumber, diskNo, cdStartDisk, cdNoOnDisk, cdCount, cdSize, cdOffset, commentLength, comment);
-
+    return new EocdRecord(
+      magicNumber,
+      diskNo,
+      cdStartDisk,
+      cdNoOnDisk,
+      cdCount,
+      cdSize,
+      cdOffset,
+      commentLength,
+      comment
+    );
   }
 
   get magicNumber() {
@@ -57,4 +63,4 @@ module.exports = class EocdRecord {
   toString() {
     return `EOCD record:\n\tcdTotalNo: ${this._cdCount}\n\tComment: ${this._comment}\n`;
   }
-};
+}
