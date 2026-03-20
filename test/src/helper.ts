@@ -1,4 +1,4 @@
-import { ZipFileReadStream, ZipStreamOptions } from '../../src/StreamImpl';
+import { ZipFileReadStream, type ZipStreamOptions } from '../../src/StreamImpl';
 
 export type ZipFile = {
   name: string,

@@ -11,7 +11,7 @@ import {
 const ZIP_MAGIC_NUMBER = 0x04034b50;
 
 export type ZipStreamOptions = {
-  filter?: string | RegExp | ((fileName: string) => boolean) | null
+  filter?: string | RegExp | ((_: string) => boolean) | null
 }
 
 export class ZipFileReadStream extends Readable {
@@ -36,6 +36,10 @@ export class ZipFileReadStream extends Readable {
     this.readMetaInformation();
     this.preFilterFiles();
     this._filesToSend = this._cdRecords.length;
+  }
+
+  get filePath() {
+    return this._filePath;
   }
 
   get fileCount() {
