@@ -1,8 +1,7 @@
-const expect = require('chai').expect;
-const {describe, it} = require("mocha");
-const ZipFileReadStream = require('../../index');
-
-const zipReader = require('./helper');
+import { expect } from 'chai';
+import { describe, it } from 'mocha';
+import { ZipFileReadStream } from '../../src/StreamImpl';
+import { zipReader } from './helper';
 
 describe('ZipReadStream', () => {
   describe('Reading', () => {
@@ -106,7 +105,7 @@ describe('ZipReadStream', () => {
       try {
         await zipReader('./test/resources/unknown-compression-method.zip');
       } catch (e) {
-        expect(e.message).to.equal(`Unsupported compression method for file 'lorem_1.txt'`);
+        expect((e as Error).message).to.equal(`Unsupported compression method for file 'lorem_1.txt'`);
       }
     });
 
@@ -114,7 +113,7 @@ describe('ZipReadStream', () => {
       try {
         await zipReader('./test/resources/not-existing.zip');
       } catch (e) {
-        expect(e.message).to.equal('./test/resources/not-existing.zip does not exist.');
+        expect((e as Error).message).to.equal('./test/resources/not-existing.zip does not exist.');
       }
     });
 
@@ -122,7 +121,7 @@ describe('ZipReadStream', () => {
       try {
         await zipReader('./test/resources/not-a-zip-file.zip');
       } catch (e) {
-        expect(e.message).to.equal('./test/resources/not-a-zip-file.zip is not a valid zip file or empty.');
+        expect((e as Error).message).to.equal('./test/resources/not-a-zip-file.zip is not a valid zip file or empty.');
       }
     });
   });

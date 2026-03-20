@@ -1,19 +1,16 @@
-module.exports = class Zip64CdLocatorRecord {
-  constructor(magicNumber, cdStartDisk, cdOffset, noDisks) {
-    this._magicNumber = magicNumber;
-    this._cdStartDisk = cdStartDisk;
-    this._cdOffset = cdOffset;
-    this._noDisks = noDisks;
-  }
+export class Zip64CdLocatorRecord {
+  constructor(
+    private _magicNumber: number,
+    private _cdStartDisk: number,
+    private _cdOffset: number,
+    private _noDisks: number
+  ) {}
 
   static MAGIC_NUMBER() {
     return 0x07064b50;
   }
 
-  static fromBuffer(buffer) {
-    if (!(buffer instanceof Buffer)) {
-      throw new Error('Could not read Zip64 central directory record.');
-    }
+  static fromBuffer(buffer: Buffer) {
     const magicNumber = buffer.readUInt32LE(0);
     const cdStartDisk = buffer.readUInt32LE(4);
     const cdOffset = buffer.readUIntLE(8, 4);
@@ -40,4 +37,4 @@ module.exports = class Zip64CdLocatorRecord {
   toString() {
     return `Zip64 central directory locator record:\n\tcdOffset@: ${this.cdOffset}\n`;
   }
-};
+}
